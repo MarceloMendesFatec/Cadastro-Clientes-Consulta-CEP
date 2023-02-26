@@ -1,7 +1,7 @@
 
 $(document).ready(function () {
-    
-    $("#inputCep").mask('00000-000');
+
+    $("#inputCep").mask('00000-000');// Mascara cep
 });
 var users = []; // array vazio para receber os usuarios
 
@@ -12,22 +12,33 @@ var users = []; // array vazio para receber os usuarios
 function searchCep() {
     var cep = document.getElementById("inputCep").value;
     var url = `https://viacep.com.br/ws/${cep}/json/`;
+    var validacep = /^[0-9]{8}$/; // validar se é um numero valido de CEP
+
+    if (!validacep.test(cep)) { //resultado negativo da validacao de CEP entra aqui 
+        document.getElementById("notFound").innerHTML = `<p class = "text-danger"> CEP invalido</p>`;
+        document.getElementById("btn").disabled = true;
+        document.getElementById("inputNumber").disabled = true;
+    } else {
+        document.getElementById("notFound").innerHTML = "";
+    };
 
 
-    $.getJSON(url, (cepInfo) => {
-      
-      if(("erro" in cepInfo)){
-          document.getElementById("notFound").innerHTML = `<p class = "text-danger"> CEP invalido</p>`;
-          document.getElementById("inputNumber").disabled = true;
-          document.getElementById("btn").disabled = true;
-      }else{
-          document.getElementById("inputAddress").value = `${cepInfo.logradouro}`;
-          document.getElementById("inputBairro").value = `${cepInfo.bairro}`;
-          document.getElementById("inputCidade").value = `${cepInfo.localidade}`;
-          document.getElementById("inputEstado").value = `${cepInfo.uf}`;
-          document.getElementById("inputNumber").disabled = false;
-          document.getElementById("btn").disabled = false;
-      }
+    $.getJSON(url, (cepInfo) => { 
+
+        if (("erro" in cepInfo)) {// 
+            document.getElementById("notFound").innerHTML = `<p class = "text-danger"> Não Encontrado</p>`;
+            document.getElementById("inputNumber").disabled = true;
+            document.getElementById("btn").disabled = true;
+            document.getElementById("form").reset(); // limpar formulario
+        } else {
+            document.getElementById("inputAddress").value = `${cepInfo.logradouro}`;
+            document.getElementById("inputBairro").value = `${cepInfo.bairro}`;
+            document.getElementById("inputCidade").value = `${cepInfo.localidade}`;
+            document.getElementById("inputEstado").value = `${cepInfo.uf}`;
+            document.getElementById("inputNumber").disabled = false;
+            document.getElementById("btn").disabled = false;
+            document.getElementById("notFound").innerHTML = ``;
+        }
     })
 
 }
@@ -46,44 +57,44 @@ function saveUser() {
         userEstado: document.getElementById("inputEstado").value,
     }; // modelo do objeto que ira receber os dados do formulario 
 
-    users.push(newUser);
+    users.push(newUser); // adiciona este objeto ao array
     newRow(newUser);
     document.getElementById("form").reset();
 }
 
 
 function newRow(user) {
-    let table = document.getElementById("table");
-    let newRow = table.insertRow();
+    const table = document.getElementById("table");
+    const newRow = table.insertRow();
 
-    let idCell = newRow.insertCell();
-    let idNode = document.createTextNode(user.userID);
+    const idCell = newRow.insertCell();
+    const idNode = document.createTextNode(user.userID);
     idCell.appendChild(idNode);
 
-    let nameCell = newRow.insertCell();
-    let nameValue = user.userName + " " + user.userLastName;
-    let nameNode = document.createTextNode(nameValue);
+    const nameCell = newRow.insertCell();
+    const nameValue = user.userName + " " + user.userLastName;
+    const nameNode = document.createTextNode(nameValue);
     nameCell.appendChild(nameNode);
 
-    let addressCell = newRow.insertCell();
-    let addressValue = user.userAddress + ", " + user.userNumber;
-    let addressNode = document.createTextNode(addressValue);
+    const addressCell = newRow.insertCell();
+    const addressValue = user.userAddress + ", " + user.userNumber;
+    const addressNode = document.createTextNode(addressValue);
     addressCell.appendChild(addressNode);
 
-    let CepCell = newRow.insertCell();
-    let CePNode = document.createTextNode(user.userCEP);
+    const CepCell = newRow.insertCell();
+    const CePNode = document.createTextNode(user.userCEP);
     CepCell.appendChild(CePNode);
 
-   let bairroCell = newRow.insertCell();
-   let bairroNode = document.createTextNode(user.userBairro);
-   bairroCell.appendChild(bairroNode);
+    const bairroCell = newRow.insertCell();
+    const bairroNode = document.createTextNode(user.userBairro);
+    bairroCell.appendChild(bairroNode); 
 
-   let cidadeCell = newRow.insertCell();
-   let cidadeNode = document.createTextNode(user.userCidade);
-   cidadeCell.appendChild(cidadeNode);
+    const cidadeCell = newRow.insertCell();
+    const cidadeNode = document.createTextNode(user.userCidade);
+    cidadeCell.appendChild(cidadeNode);
 
-   let estadoCell = newRow.insertCell();
-   let estadoNode = document.createTextNode(user.userEstado);
-   estadoCell.appendChild(estadoNode);
+    const estadoCell = newRow.insertCell();
+    const estadoNode = document.createTextNode(user.userEstado);
+    estadoCell.appendChild(estadoNode);
 
 }
