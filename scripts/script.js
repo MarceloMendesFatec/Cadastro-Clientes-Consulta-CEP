@@ -28,7 +28,6 @@ function searchCep() {
           document.getElementById("inputNumber").disabled = false;
           document.getElementById("btn").disabled = false;
       }
-        
     })
 
 }
